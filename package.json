@@ -1,0 +1,12 @@
+{
+  "name": "freeze-extension",
+  "version": "1.0.0",
+  "private": true,
+  "description": "One-click pause/resume of media across every open Brave tab.",
+  "scripts": {
+    "icons": "node scripts/generate-icons.js",
+    "pack": "node scripts/pack.js",
+    "build": "node scripts/generate-icons.js && node scripts/pack.js"
+  },
+  "license": "MIT"
+}
