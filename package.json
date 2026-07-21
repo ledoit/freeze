@@ -8,5 +8,5 @@
     "pack": "node scripts/pack.js",
     "build": "node scripts/generate-icons.js && node scripts/pack.js"
   },
-  "license": "MIT"
+  "license": "UNLICENSED"
 }
