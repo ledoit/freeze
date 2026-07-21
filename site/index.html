@@ -3,79 +3,105 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Freeze — pause every tab with one click</title>
-    <meta
-      name="description"
-      content="Freeze is a Brave/Chrome extension that pauses all media — especially YouTube — across every open tab with one click. Click again to resume."
-    />
+    <title>Freeze — pause every tab, one click</title>
+    <meta name="description" content="Freeze pauses every playing video and audio across all your open tabs with one click. Click again to resume." />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="aurora"></div>
-    <header class="nav">
-      <div class="brand">
-        <span class="flake">❄</span>
-        <span>Freeze</span>
-      </div>
-      <a class="ghost" href="https://github.com/menhir-holdings/freeze" target="_blank" rel="noopener">GitHub</a>
-    </header>
 
-    <main>
-      <section class="hero">
-        <div class="badge">Brave · Chrome · Edge · Manifest V3</div>
-        <h1>Pause <em>everything</em>,<br />with one click.</h1>
-        <p class="lede">
-          Freeze instantly pauses every playing video and audio — especially YouTube — across
-          <strong>all</strong> your open tabs. Click again and only what Freeze paused resumes.
-          Whatever you'd already paused stays paused.
-        </p>
-        <div class="cta">
-          <a class="primary" href="#install">Install in Brave</a>
-          <a class="secondary" href="https://github.com/menhir-holdings/freeze" target="_blank" rel="noopener">View source</a>
+    <div class="page">
+
+      <!-- ── LEFT PANEL ─────────────────────────────────────── -->
+      <aside class="panel-left">
+        <div class="brand">❄ Freeze</div>
+
+        <div class="hero-text">
+          <h1>Pause<br/><em>everything.</em></h1>
+          <p class="sub">One toolbar click. Every tab. Every frame. YouTube, Twitch, Spotify — all of it. Click again, only what Freeze paused resumes.</p>
         </div>
-        <div class="chip-row">
-          <span class="chip">No accounts</span>
-          <span class="chip">No network</span>
-          <span class="chip">No tracking</span>
-          <span class="chip">~5&nbsp;KB</span>
+
+        <div class="trust-row">
+          <span>No accounts</span>
+          <span>No network</span>
+          <span>No tracking</span>
+          <span>~5 KB</span>
         </div>
-      </section>
 
-      <section class="cards">
-        <article class="card">
-          <div class="ico">⚡</div>
-          <h3>One button</h3>
-          <p>The toolbar icon is the whole UI. Click to freeze, click to thaw. Nothing to configure.</p>
-        </article>
-        <article class="card">
-          <div class="ico">🎯</div>
-          <h3>Every tab, every frame</h3>
-          <p>Reaches YouTube, Twitch, embeds and background tabs — anything with HTML5 media.</p>
-        </article>
-        <article class="card">
-          <div class="ico">🧊</div>
-          <h3>Respects your state</h3>
-          <p>Thaw only resumes what Freeze paused. Videos you paused yourself stay paused.</p>
-        </article>
-      </section>
+        <!-- ── INSTALL ─────────────────── -->
+        <div class="install-block" id="install">
+          <div class="install-header">
+            <span class="install-label">Install</span>
+            <span class="compat">Brave · Chrome · Edge</span>
+          </div>
 
-      <section id="install" class="install">
-        <h2>Install in Brave</h2>
-        <ol class="steps">
-          <li><span>1</span><p>Download the repo, then run <code>npm run icons</code> once to generate the icons.</p></li>
-          <li><span>2</span><p>Open <code>brave://extensions</code> in Brave.</p></li>
-          <li><span>3</span><p>Turn on <strong>Developer mode</strong> (top-right toggle).</p></li>
-          <li><span>4</span><p>Click <strong>Load unpacked</strong> and pick the folder containing <code>manifest.json</code>.</p></li>
-          <li><span>5</span><p>Pin <strong>Freeze</strong> to the toolbar — and start freezing.</p></li>
-        </ol>
-        <p class="fineprint">Works the same in Chrome (<code>chrome://extensions</code>) and Edge (<code>edge://extensions</code>).</p>
-      </section>
-    </main>
+          <ol class="install-steps">
+            <li>
+              <span class="n">1</span>
+              <div>
+                <a class="dl-btn" href="freeze.zip" download="freeze.zip">
+                  <span class="dl-icon">↓</span> Download freeze.zip
+                </a>
+                <p class="hint">Unzip it anywhere — Desktop is fine.</p>
+              </div>
+            </li>
+            <li>
+              <span class="n">2</span>
+              <div>
+                <button class="open-btn" id="open-extensions" type="button">Open Extensions page</button>
+                <p class="hint">Enable <strong>Developer mode</strong> (top-right toggle), then click <strong>Load unpacked</strong>.</p>
+              </div>
+            </li>
+            <li>
+              <span class="n">3</span>
+              <div>
+                <p class="step-action">Select the unzipped folder.</p>
+                <p class="hint">Pin Freeze to the toolbar. Done.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
 
-    <footer>
-      <span>Freeze · Menhir Holdings</span>
-      <a href="https://github.com/menhir-holdings/freeze" target="_blank" rel="noopener">github.com/menhir-holdings/freeze</a>
-    </footer>
+        <div class="footnote">
+          <a href="https://github.com/menhir-holdings/freeze" target="_blank" rel="noopener">Source on GitHub</a>
+          · All Rights Reserved · Menhir Holdings
+        </div>
+      </aside>
+
+      <!-- ── RIGHT PANEL (demo) ──────────────────────────────── -->
+      <main class="panel-right">
+        <div class="demo-wrap">
+          <p class="demo-eyebrow">Try it</p>
+          <div id="freeze-demo"></div>
+        </div>
+      </main>
+
+    </div>
+
+    <script src="demo.js"></script>
+    <script>
+      document.getElementById('open-extensions').addEventListener('click', function() {
+        // Give the user a copyable URL since JS can't navigate to browser: URLs
+        const url = navigator.userAgent.includes('Edg') ? 'edge://extensions'
+                  : navigator.userAgent.includes('Brave') || navigator.userAgent.includes('Chrome') ? 'chrome://extensions'
+                  : 'brave://extensions';
+        // Try to copy; fall back to showing it inline
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(function() {
+            var btn = document.getElementById('open-extensions');
+            btn.textContent = url + ' — copied!';
+            btn.classList.add('copied');
+            setTimeout(function() {
+              btn.textContent = 'Open Extensions page';
+              btn.classList.remove('copied');
+            }, 3000);
+          });
+        } else {
+          var btn = document.getElementById('open-extensions');
+          btn.textContent = url;
+          btn.classList.add('copied');
+        }
+      });
+    </script>
   </body>
 </html>

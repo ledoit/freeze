@@ -9,16 +9,19 @@ Freeze is a tiny, zero-dependency Manifest V3 extension for Brave (and Chrome/Ed
 
 The icon turns **ice-blue with a ❄ badge** while frozen so you always know the state.
 
-## Install in Brave (Load unpacked)
+## Install
 
-1. Clone or download this repo.
-2. Generate the icons once: `npm run icons` (or `node scripts/generate-icons.js`).
-3. Open `brave://extensions` in Brave.
-4. Toggle **Developer mode** on (top-right).
-5. Click **Load unpacked** and select this project folder (the one containing `manifest.json`).
-6. Pin **Freeze** to the toolbar and click it.
+**From the landing page (recommended):** open the [Freeze site](https://freeze.menhir-holdings.com), download `freeze.zip`, unzip it, then load the folder in your browser's extensions page.
 
-> Chrome/Edge work identically via `chrome://extensions` / `edge://extensions`.
+**From this repo:**
+
+1. Run `npm run build` once (generates icons and `dist/freeze.zip`).
+2. Unzip `dist/freeze.zip` — or use this folder directly if icons are already present.
+3. Open `brave://extensions` (or `chrome://extensions` / `edge://extensions`).
+4. Enable **Developer mode**, click **Load unpacked**, select the unzipped folder.
+5. Pin **Freeze** to the toolbar.
+
+> The landing page ships a ready-to-load zip so users don't need git or npm.
 
 ## How it works
 
@@ -43,7 +46,7 @@ manifest.json        MV3 manifest
 src/background.js    service worker (toggle + injection)
 icons/               generated PNGs (idle + frozen variants)
 scripts/             icon generator + zip packer (no deps)
-site/                install/landing page (deployed to Vercel)
+site/                install/landing page + freeze.zip (deployed to Vercel)
 ```
 
 ## Notes & scope
@@ -53,4 +56,4 @@ site/                install/landing page (deployed to Vercel)
 
 ## License
 
-MIT © Menhir Holdings
+All Rights Reserved © Menhir Holdings
