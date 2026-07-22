@@ -96,4 +96,8 @@ const files = [];
 for (const entry of INCLUDE) walk(entry, files);
 fs.mkdirSync(DIST, { recursive: true });
 fs.writeFileSync(OUT, buildZip(files));
+const SITE_ZIP = path.join(ROOT, "site", "freeze.zip");
+fs.mkdirSync(path.dirname(SITE_ZIP), { recursive: true });
+fs.copyFileSync(OUT, SITE_ZIP);
 console.log(`packed ${files.length} files -> ${path.relative(ROOT, OUT)}`);
+console.log(`copied -> ${path.relative(ROOT, SITE_ZIP)}`);
