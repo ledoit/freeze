@@ -57,3 +57,7 @@ site/                install/landing page + freeze.zip (deployed to Vercel)
 ## License
 
 All Rights Reserved © Menhir Holdings
+
+## Project tracking
+
+Linear is the source of truth — see [STATUS.md](./STATUS.md) and [TODO.md](./TODO.md).
