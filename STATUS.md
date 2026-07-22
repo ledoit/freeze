@@ -9,14 +9,16 @@
 - Toolbar icons (idle + frozen), state badge, `npm run build` → `dist/freeze.zip` ([MT-114](https://linear.app/menhir-holdings/issue/MT-114))
 - Install landing + demo at `site/` ([MT-118](https://linear.app/menhir-holdings/issue/MT-118))
 - Landing redesign, bundled zip download, All Rights Reserved ([PR #3](https://github.com/menhir-holdings/freeze/pull/3))
+- Vercel SSO deployment protection disabled on `freeze` project
 
-**Live (intended):** [freeze.menhir-holdings.com](https://freeze.menhir-holdings.com)
+**Live:** [freeze-lilac.vercel.app](https://freeze-lilac.vercel.app)  
+**Canonical (pending DNS):** [freeze.menhir-holdings.com](https://freeze.menhir-holdings.com) — add Cloudflare CNAME `freeze` → `cname.vercel-dns.com` (see [stonehenge DNS](https://github.com/menhir-holdings/stonehenge/blob/main/docs/DNS.md))
 
 ## In flight
 
 | Issue | What |
 |-------|------|
-| [MT-119](https://linear.app/menhir-holdings/issue/MT-119) | Landing returns **403** — disable Vercel Deployment Protection on the `freeze` project |
+| [MT-119](https://linear.app/menhir-holdings/issue/MT-119) | Cloudflare CNAME for `freeze` subdomain (Vercel domain + SSO fix done) |
 
 ## Backlog
 
