@@ -1,5 +1,5 @@
 // Freeze — reliable pause/resume and rewind across every open tab.
-// MV3 service worker; commands arrive from the toolbar, menu, or shortcuts.
+// MV3 service worker; actions arrive from the popup or keyboard shortcuts.
 
 importScripts("media-controller.js");
 
@@ -139,14 +139,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   return true;
 });
 
-chrome.action.onClicked.addListener(() => {
-  serialize(toggleFreeze);
-});
-
-chrome.contextMenus.onClicked.addListener((info) => {
-  if (info.menuItemId === "rewind-all") serialize(rewindAll);
-});
-
 chrome.commands.onCommand.addListener((command) => {
   if (command === "toggle-freeze") serialize(toggleFreeze);
   if (command === "rewind-all") serialize(rewindAll);
@@ -162,12 +154,6 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
 chrome.runtime.onInstalled.addListener(async () => {
   await chrome.storage.local.set({ frozen: false });
   await reflectState(false, 0);
-  await chrome.contextMenus.removeAll();
-  chrome.contextMenus.create({
-    id: "rewind-all",
-    title: "Back to 0:00 — rewind all media",
-    contexts: ["action"],
-  });
 });
 
 chrome.runtime.onStartup.addListener(async () => {

@@ -18,7 +18,7 @@
 
 | Issue | What |
 |-------|------|
-| [MT-178](https://linear.app/menhir-holdings/issue/MT-178) | First-click reliability, persistent page controller, and right-click rewind-all action |
+| [MT-178](https://linear.app/menhir-holdings/issue/MT-178) | Freeze reliability, persistent page controller, and rewind-all action in the popup |
 | [MT-119](https://linear.app/menhir-holdings/issue/MT-119) | Cloudflare CNAME for `freeze` subdomain (Vercel domain + SSO fix done) |
 
 ## Backlog

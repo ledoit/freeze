@@ -4,10 +4,12 @@
 
 Freeze is a tiny, zero-dependency Manifest V3 extension for Brave (and Chrome/Edge/any Chromium browser):
 
-- **Left-click the toolbar icon** → freezes every playing `<video>` / `<audio>`; click again to thaw only what Freeze paused.
-- **Right-click the toolbar icon → Back to 0:00** → rewinds all reachable media without changing whether it was playing or paused.
+- **Freeze all / Thaw all** → pauses every playing `<video>` / `<audio>`, then resumes only what Freeze paused.
+- **Back to 0:00** → rewinds all reachable media without changing whether it was playing or paused.
 
-Freeze also catches media inserted or started after the first click on currently open pages. Keyboard shortcuts: `Alt+Shift+F` toggles Freeze; `Alt+Shift+0` rewinds.
+Freeze also catches media inserted or started after freezing on currently open pages.
+
+Prefer no popup at all? `Alt+Shift+F` freezes/thaws instantly and `Alt+Shift+0` rewinds, without opening the panel.
 
 ## Install
 
@@ -25,7 +27,7 @@ Freeze also catches media inserted or started after the first click on currently
 
 ## How it works
 
-- `src/background.js` is an MV3 service worker. Toolbar, context-menu, and keyboard actions are serialized through it.
+- `src/background.js` is an MV3 service worker. Popup and keyboard actions are serialized through it.
 - It runs `chrome.scripting.executeScript` against **all tabs, all frames**, injecting a self-contained controller that:
   - **Freeze:** pauses each playing media element and tags it with `data-freeze-paused="1"`.
   - **Thaw:** resumes only the tagged elements and clears the tag.
@@ -47,6 +49,7 @@ Freeze also catches media inserted or started after the first click on currently
 ```
 manifest.json        MV3 manifest
 src/background.js    service worker (freeze/thaw/rewind controller)
+popup/               two-action toolbar panel
 icons/               generated PNGs (idle + frozen variants)
 scripts/             icon generator + zip packer (no deps)
 site/                install/landing page + freeze.zip (deployed to Vercel)

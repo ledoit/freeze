@@ -4,11 +4,11 @@ Linear is authoritative: [Freeze project](https://linear.app/menhir-holdings/pro
 
 ## 1. Reliability + rewind — [MT-178](https://linear.app/menhir-holdings/issue/MT-178) (In Progress)
 
-- Verify one left-click pauses across YouTube and another HTML5 media site.
+- Verify Freeze all pauses across YouTube and another HTML5 media site.
 - Verify media started/replaced after freezing is immediately paused.
-- Verify Thaw resumes only Freeze-tagged media.
-- Verify right-click → Back to 0:00 preserves each media element's playing/paused state.
-- Load the rebuilt `dist/freeze.zip` in Brave and smoke-test keyboard shortcuts.
+- Verify Thaw all resumes only Freeze-tagged media.
+- Verify Back to 0:00 preserves each media element's playing/paused state.
+- Load the rebuilt `dist/freeze.zip` in Brave and smoke-test `Alt+Shift+F` / `Alt+Shift+0`.
 
 ## 2. Public landing — [MT-119](https://linear.app/menhir-holdings/issue/MT-119) (Backlog → In Progress)
 
