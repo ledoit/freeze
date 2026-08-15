@@ -1,13 +1,13 @@
 # Freeze
 
-**One click freezes (pauses) media — especially YouTube — across every open tab. Click again to thaw and resume.**
+**Freeze, thaw, or rewind media — especially YouTube — across every open tab.**
 
-Freeze is a tiny, zero-dependency Manifest V3 extension for Brave (and Chrome/Edge/any Chromium browser). The toolbar button is the whole UI:
+Freeze is a tiny, zero-dependency Manifest V3 extension for Brave (and Chrome/Edge/any Chromium browser):
 
-- **Click once** → every currently-playing `<video>` / `<audio>` in every open tab pauses (YouTube, Twitch, Spotify web, SoundCloud, embeds, …).
-- **Click again** → only the media *Freeze* paused resumes. Anything you had already paused stays paused.
+- **Left-click the toolbar icon** → freezes every playing `<video>` / `<audio>`; click again to thaw only what Freeze paused.
+- **Right-click the toolbar icon → Back to 0:00** → rewinds all reachable media without changing whether it was playing or paused.
 
-The icon turns **ice-blue with a ❄ badge** while frozen so you always know the state.
+Freeze also catches media inserted or started after the first click on currently open pages. Keyboard shortcuts: `Alt+Shift+F` toggles Freeze; `Alt+Shift+0` rewinds.
 
 ## Install
 
@@ -15,8 +15,8 @@ The icon turns **ice-blue with a ❄ badge** while frozen so you always know the
 
 **From this repo:**
 
-1. Run `npm run build` once (generates icons and `dist/freeze.zip`).
-2. Unzip `dist/freeze.zip` — or use this folder directly if icons are already present.
+1. Run `npm run build` once (generates icons, `dist/freeze.zip`, and `dist/freeze-unpacked/`).
+2. Use `dist/freeze-unpacked/` directly, or unzip `dist/freeze.zip`.
 3. Open `brave://extensions` (or `chrome://extensions` / `edge://extensions`).
 4. Enable **Developer mode**, click **Load unpacked**, select the unzipped folder.
 5. Pin **Freeze** to the toolbar.
@@ -25,10 +25,13 @@ The icon turns **ice-blue with a ❄ badge** while frozen so you always know the
 
 ## How it works
 
-- `src/background.js` is an MV3 service worker. `chrome.action.onClicked` toggles a `frozen` flag in `chrome.storage.local`.
-- On toggle it runs `chrome.scripting.executeScript` against **all tabs, all frames**, injecting a self-contained function that:
+- `src/background.js` is an MV3 service worker. Toolbar, context-menu, and keyboard actions are serialized through it.
+- It runs `chrome.scripting.executeScript` against **all tabs, all frames**, injecting a self-contained controller that:
   - **Freeze:** pauses each playing media element and tags it with `data-freeze-paused="1"`.
   - **Thaw:** resumes only the tagged elements and clears the tag.
+  - **Rewind:** seeks reachable media to `0:00` without changing play state.
+- A capture listener plus `MutationObserver` catches late starts and SPA-replaced players while frozen.
+- Stored state is verified against live page controllers, preventing a stale state from consuming the first click.
 - Restricted pages (`chrome://`, the web store, etc.) are skipped gracefully.
 
 ## Scripts
@@ -43,7 +46,7 @@ The icon turns **ice-blue with a ❄ badge** while frozen so you always know the
 
 ```
 manifest.json        MV3 manifest
-src/background.js    service worker (toggle + injection)
+src/background.js    service worker (freeze/thaw/rewind controller)
 icons/               generated PNGs (idle + frozen variants)
 scripts/             icon generator + zip packer (no deps)
 site/                install/landing page + freeze.zip (deployed to Vercel)
