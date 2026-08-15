@@ -1,5 +1,7 @@
-// Freeze — one-click pause/resume of media across every open tab.
-// MV3 service worker. No popup: the toolbar button itself is the toggle.
+// Freeze — reliable pause/resume and rewind across every open tab.
+// MV3 service worker; actions arrive from the popup or keyboard shortcuts.
+
+importScripts("media-controller.js");
 
 const IDLE_ICONS = {
   16: "icons/freeze-16.png",
@@ -17,64 +19,59 @@ const FROZEN_ICONS = {
 
 const FROZEN_COLOR = "#2E8BFF";
 
-// Injected into every frame of every tab. Must be fully self-contained: it is
-// serialized and executed in the page, so it cannot close over anything here.
-function toggleFreezeInPage(freeze) {
-  const MARK = "freezePaused"; // element.dataset.freezePaused = "1"
-  let touched = 0;
-
-  if (freeze) {
-    const media = document.querySelectorAll("video, audio");
-    media.forEach((el) => {
-      try {
-        if (!el.paused && !el.ended && el.currentTime > 0) {
-          el.dataset[MARK] = "1";
-          el.pause();
-          touched++;
-        }
-      } catch (_) {
-        /* cross-origin or detached media element */
-      }
-    });
-  } else {
-    const media = document.querySelectorAll('[data-freeze-paused="1"]');
-    media.forEach((el) => {
-      try {
-        delete el.dataset[MARK];
-        const p = el.play();
-        if (p && typeof p.catch === "function") p.catch(() => {});
-        touched++;
-      } catch (_) {
-        /* autoplay policy or detached media element */
-      }
-    });
-  }
-
-  return touched;
-}
-
-async function applyToAllTabs(freeze) {
-  const tabs = await chrome.tabs.query({});
+async function runInTabs(action, tabIds = null) {
+  const tabs = tabIds
+    ? tabIds.map((id) => ({ id }))
+    : await chrome.tabs.query({});
   const runs = tabs.map((tab) => {
     if (tab.id == null) return Promise.resolve([]);
     return chrome.scripting
       .executeScript({
         target: { tabId: tab.id, allFrames: true },
-        func: toggleFreezeInPage,
-        args: [freeze],
+        func: controlMediaInPage,
+        args: [action],
       })
       .catch(() => []); // restricted pages (chrome://, web store, etc.)
   });
 
   const results = await Promise.allSettled(runs);
-  let count = 0;
+  const totals = {
+    touched: 0,
+    tagged: 0,
+    playing: 0,
+    activeFrames: 0,
+  };
   for (const r of results) {
     if (r.status !== "fulfilled" || !Array.isArray(r.value)) continue;
     for (const frame of r.value) {
-      if (frame && typeof frame.result === "number") count += frame.result;
+      const result = frame?.result;
+      if (!result || typeof result !== "object") continue;
+      totals.touched += result.touched || 0;
+      totals.tagged += result.tagged || 0;
+      totals.playing += result.playing || 0;
+      if (result.controllerActive) totals.activeFrames++;
     }
   }
-  return count;
+  return totals;
+}
+
+async function applyReliably(action) {
+  const first = await runInTabs(action);
+  if (action !== "freeze") return first;
+
+  // A few sites replace their media node while responding to UI/page events.
+  // Retry briefly; already-paused elements are ignored, so this is idempotent.
+  await new Promise((resolve) => setTimeout(resolve, 160));
+  const second = await runInTabs(action);
+  await new Promise((resolve) => setTimeout(resolve, 440));
+  const third = await runInTabs(action);
+
+  return {
+    touched: first.touched + second.touched + third.touched,
+    tagged: third.tagged,
+    playing: third.playing,
+    activeFrames: third.activeFrames,
+  };
 }
 
 async function reflectState(frozen, count) {
@@ -88,20 +85,69 @@ async function reflectState(frozen, count) {
   });
 }
 
-let busy = false;
+async function getEffectiveState() {
+  const { frozen = false } = await chrome.storage.local.get("frozen");
+  if (!frozen) return { frozen: false, tagged: 0 };
 
-chrome.action.onClicked.addListener(async () => {
-  if (busy) return; // ignore rapid double-clicks mid-toggle
-  busy = true;
-  try {
-    const { frozen = false } = await chrome.storage.local.get("frozen");
-    const next = !frozen;
-    const count = await applyToAllTabs(next);
-    await chrome.storage.local.set({ frozen: next });
-    await reflectState(next, count);
-  } finally {
-    busy = false;
+  // Storage survives service-worker restarts, while page contexts may not.
+  // Treat state as thawed if no page still has an active controller or tag.
+  const stats = await runInTabs("status");
+  const effective = stats.activeFrames > 0 || stats.tagged > 0;
+  if (!effective) {
+    await chrome.storage.local.set({ frozen: false });
+    await reflectState(false, 0);
   }
+  return { frozen: effective, tagged: stats.tagged };
+}
+
+let operation = Promise.resolve();
+
+function serialize(task) {
+  operation = operation.then(task, task);
+  return operation;
+}
+
+async function toggleFreeze() {
+  const state = await getEffectiveState();
+  const next = !state.frozen;
+  const stats = await applyReliably(next ? "freeze" : "thaw");
+  await chrome.storage.local.set({ frozen: next });
+  await reflectState(next, next ? stats.tagged : stats.touched);
+  return { frozen: next, count: next ? stats.tagged : stats.touched };
+}
+
+async function rewindAll() {
+  const stats = await runInTabs("rewind");
+  return { rewound: stats.touched };
+}
+
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (!message || !["GET_STATE", "TOGGLE_FREEZE", "REWIND_ALL"].includes(message.type)) {
+    return false;
+  }
+
+  const task =
+    message.type === "GET_STATE"
+      ? getEffectiveState()
+      : message.type === "TOGGLE_FREEZE"
+        ? serialize(toggleFreeze)
+        : serialize(rewindAll);
+
+  task.then(sendResponse).catch((error) => {
+    sendResponse({ error: error instanceof Error ? error.message : String(error) });
+  });
+  return true;
+});
+
+chrome.commands.onCommand.addListener((command) => {
+  if (command === "toggle-freeze") serialize(toggleFreeze);
+  if (command === "rewind-all") serialize(rewindAll);
+});
+
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+  if (changeInfo.status !== "complete") return;
+  const { frozen = false } = await chrome.storage.local.get("frozen");
+  if (frozen) runInTabs("freeze", [tabId]);
 });
 
 // Start from a clean, thawed state on install and on browser startup.
