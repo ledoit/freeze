@@ -18,8 +18,8 @@
 
 | Issue | What |
 |-------|------|
-| [MT-183](https://linear.app/menhir-holdings/issue/MT-183) | Thaw all plays every tab (not only freeze-tagged media) |
-| [MT-182](https://linear.app/menhir-holdings/issue/MT-182) | Unified volume slider for all tabs |
+| [MT-183](https://linear.app/menhir-holdings/issue/MT-183) | Thaw all plays every tab (not only freeze-tagged media) — [PR #7](https://github.com/menhir-holdings/freeze/pull/7) |
+| [MT-182](https://linear.app/menhir-holdings/issue/MT-182) | Unified volume slider for all tabs — [PR #7](https://github.com/menhir-holdings/freeze/pull/7) |
 | [MT-178](https://linear.app/menhir-holdings/issue/MT-178) | Freeze reliability, persistent page controller, and rewind-all action in the popup |
 | [MT-119](https://linear.app/menhir-holdings/issue/MT-119) | Cloudflare CNAME for `freeze` subdomain (Vercel domain + SSO fix done) |
 

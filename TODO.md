@@ -9,14 +9,14 @@ Linear is authoritative: [Freeze project](https://linear.app/menhir-holdings/pro
 - Verify Back to 0:00 preserves each media element's playing/paused state.
 - Load the rebuilt `dist/freeze.zip` in Brave and smoke-test `Alt+Shift+F` / `Alt+Shift+0`.
 
-## 2. Thaw all = play all tabs — [MT-183](https://linear.app/menhir-holdings/issue/MT-183) (In Progress)
+## 2. Thaw all = play all tabs — [MT-183](https://linear.app/menhir-holdings/issue/MT-183) (In Review)
 
-Thaw all hits play on all reachable media in all tabs, not only Freeze-tagged media.
+Thaw all hits play on all reachable media in all tabs, not only Freeze-tagged media. [PR #7](https://github.com/menhir-holdings/freeze/pull/7).
 
 **Verify:** paused-before-freeze tabs start on thaw; YouTube + a second HTML5 site; shortcut `Alt+Shift+F` matches the popup.
 
-## 3. Unified volume slider — [MT-182](https://linear.app/menhir-holdings/issue/MT-182) (In Progress)
+## 3. Unified volume slider — [MT-182](https://linear.app/menhir-holdings/issue/MT-182) (In Review)
 
-One popup slider sets volume together across all tabs (persisted in `chrome.storage`).
+One popup slider sets volume together across all tabs (persisted in `chrome.storage`). [PR #7](https://github.com/menhir-holdings/freeze/pull/7).
 
 **Verify:** two tabs with media move together; new/replaced media pick up the current level; 0% mutes.
