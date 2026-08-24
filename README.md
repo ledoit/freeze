@@ -4,7 +4,8 @@
 
 Freeze is a tiny, zero-dependency Manifest V3 extension for Brave (and Chrome/Edge/any Chromium browser):
 
-- **Freeze all / Thaw all** → pauses every playing `<video>` / `<audio>`, then resumes only what Freeze paused.
+- **Freeze all / Thaw all** → pauses every playing `<video>` / `<audio>`, then hits play on all reachable media in every tab.
+- **All-tabs volume** → one slider sets the same volume on reachable media across tabs.
 - **Back to 0:00** → rewinds all reachable media without changing whether it was playing or paused.
 
 Freeze also catches media inserted or started after freezing on currently open pages.
@@ -30,7 +31,8 @@ Prefer no popup at all? `Alt+Shift+F` freezes/thaws instantly and `Alt+Shift+0` 
 - `src/background.js` is an MV3 service worker. Popup and keyboard actions are serialized through it.
 - It runs `chrome.scripting.executeScript` against **all tabs, all frames**, injecting a self-contained controller that:
   - **Freeze:** pauses each playing media element and tags it with `data-freeze-paused="1"`.
-  - **Thaw:** resumes only the tagged elements and clears the tag.
+  - **Thaw:** hits play on every reachable `<video>` / `<audio>`, not only tagged ones.
+  - **Volume:** sets every reachable media element to the same stored level.
   - **Rewind:** seeks reachable media to `0:00` without changing play state.
 - A capture listener plus `MutationObserver` catches late starts and SPA-replaced players while frozen.
 - Stored state is verified against live page controllers, preventing a stale state from consuming the first click.
@@ -49,7 +51,7 @@ Prefer no popup at all? `Alt+Shift+F` freezes/thaws instantly and `Alt+Shift+0` 
 ```
 manifest.json        MV3 manifest
 src/background.js    service worker (freeze/thaw/rewind controller)
-popup/               two-action toolbar panel
+popup/               freeze, rewind, and unified volume panel
 icons/               generated PNGs (idle + frozen variants)
 scripts/             icon generator + zip packer (no deps)
 site/                install/landing page + freeze.zip (deployed to Vercel)

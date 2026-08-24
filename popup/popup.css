@@ -119,6 +119,29 @@ small {
   font-size: 10px;
 }
 
+.volume {
+  display: grid;
+  gap: 8px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+}
+
+.volume-copy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.volume input[type="range"] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--ice);
+  cursor: pointer;
+}
+
 footer {
   display: flex;
   justify-content: space-between;

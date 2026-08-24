@@ -1,6 +1,6 @@
 # Freeze — Status
 
-**As of:** 2026-08-15
+**As of:** 2026-08-24
 **SoT:** [Linear — Freeze](https://linear.app/menhir-holdings/project/freeze-brave-extension-5672687b-a2c6-42f9-a532-84197440a683)
 
 ## Shipped
@@ -18,11 +18,13 @@
 
 | Issue | What |
 |-------|------|
+| [MT-183](https://linear.app/menhir-holdings/issue/MT-183) | Thaw all plays every tab (not only freeze-tagged media) |
+| [MT-182](https://linear.app/menhir-holdings/issue/MT-182) | Unified volume slider for all tabs |
 | [MT-178](https://linear.app/menhir-holdings/issue/MT-178) | Freeze reliability, persistent page controller, and rewind-all action in the popup |
 | [MT-119](https://linear.app/menhir-holdings/issue/MT-119) | Cloudflare CNAME for `freeze` subdomain (Vercel domain + SSO fix done) |
 
 ## Backlog
 
-None open in Linear after MVP stack closed.
+None.
 
 See [TODO.md](./TODO.md).

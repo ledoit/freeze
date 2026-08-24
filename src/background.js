@@ -1,4 +1,4 @@
-// Freeze — reliable pause/resume and rewind across every open tab.
+// Freeze — reliable pause/resume, rewind, and unified volume across every tab.
 // MV3 service worker; actions arrive from the popup or keyboard shortcuts.
 
 importScripts("media-controller.js");
@@ -18,8 +18,16 @@ const FROZEN_ICONS = {
 };
 
 const FROZEN_COLOR = "#2E8BFF";
+const DEFAULT_VOLUME = 1;
+
+async function getVolume() {
+  const { unifiedVolume = DEFAULT_VOLUME } = await chrome.storage.local.get("unifiedVolume");
+  const n = Number(unifiedVolume);
+  return Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : DEFAULT_VOLUME;
+}
 
 async function runInTabs(action, tabIds = null) {
+  const volume = await getVolume();
   const tabs = tabIds
     ? tabIds.map((id) => ({ id }))
     : await chrome.tabs.query({});
@@ -29,7 +37,7 @@ async function runInTabs(action, tabIds = null) {
       .executeScript({
         target: { tabId: tab.id, allFrames: true },
         func: controlMediaInPage,
-        args: [action],
+        args: [{ action, volume }],
       })
       .catch(() => []); // restricted pages (chrome://, web store, etc.)
   });
@@ -80,14 +88,15 @@ async function reflectState(frozen, count) {
   await chrome.action.setBadgeText({ text: frozen ? "❄" : "" });
   await chrome.action.setTitle({
     title: frozen
-      ? `Freeze — ${count} item(s) paused. Click to resume.`
+      ? `Freeze — ${count} item(s) paused. Click to play all.`
       : "Freeze — click to pause all media in every tab.",
   });
 }
 
 async function getEffectiveState() {
+  const volume = await getVolume();
   const { frozen = false } = await chrome.storage.local.get("frozen");
-  if (!frozen) return { frozen: false, tagged: 0 };
+  if (!frozen) return { frozen: false, tagged: 0, volume };
 
   // Storage survives service-worker restarts, while page contexts may not.
   // Treat state as thawed if no page still has an active controller or tag.
@@ -97,7 +106,7 @@ async function getEffectiveState() {
     await chrome.storage.local.set({ frozen: false });
     await reflectState(false, 0);
   }
-  return { frozen: effective, tagged: stats.tagged };
+  return { frozen: effective, tagged: stats.tagged, volume };
 }
 
 let operation = Promise.resolve();
@@ -113,16 +122,31 @@ async function toggleFreeze() {
   const stats = await applyReliably(next ? "freeze" : "thaw");
   await chrome.storage.local.set({ frozen: next });
   await reflectState(next, next ? stats.tagged : stats.touched);
-  return { frozen: next, count: next ? stats.tagged : stats.touched };
+  return {
+    frozen: next,
+    count: next ? stats.tagged : stats.touched,
+    volume: await getVolume(),
+  };
 }
 
 async function rewindAll() {
   const stats = await runInTabs("rewind");
-  return { rewound: stats.touched };
+  return { rewound: stats.touched, volume: await getVolume() };
+}
+
+async function setVolume(level) {
+  const volume = Math.min(1, Math.max(0, Number(level)));
+  const safe = Number.isFinite(volume) ? volume : DEFAULT_VOLUME;
+  await chrome.storage.local.set({ unifiedVolume: safe });
+  const stats = await runInTabs("volume");
+  return { volume: safe, touched: stats.touched };
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (!message || !["GET_STATE", "TOGGLE_FREEZE", "REWIND_ALL"].includes(message.type)) {
+  if (
+    !message ||
+    !["GET_STATE", "TOGGLE_FREEZE", "REWIND_ALL", "SET_VOLUME"].includes(message.type)
+  ) {
     return false;
   }
 
@@ -131,7 +155,9 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       ? getEffectiveState()
       : message.type === "TOGGLE_FREEZE"
         ? serialize(toggleFreeze)
-        : serialize(rewindAll);
+        : message.type === "REWIND_ALL"
+          ? serialize(rewindAll)
+          : serialize(() => setVolume(message.volume));
 
   task.then(sendResponse).catch((error) => {
     sendResponse({ error: error instanceof Error ? error.message : String(error) });
@@ -148,11 +174,15 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   if (changeInfo.status !== "complete") return;
   const { frozen = false } = await chrome.storage.local.get("frozen");
   if (frozen) runInTabs("freeze", [tabId]);
+  else runInTabs("volume", [tabId]);
 });
 
-// Start from a clean, thawed state on install and on browser startup.
 chrome.runtime.onInstalled.addListener(async () => {
-  await chrome.storage.local.set({ frozen: false });
+  const { unifiedVolume } = await chrome.storage.local.get("unifiedVolume");
+  const volume = Number.isFinite(Number(unifiedVolume))
+    ? Number(unifiedVolume)
+    : DEFAULT_VOLUME;
+  await chrome.storage.local.set({ frozen: false, unifiedVolume: volume });
   await reflectState(false, 0);
 });
 
