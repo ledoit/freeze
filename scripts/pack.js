@@ -9,8 +9,9 @@ const zlib = require("zlib");
 const ROOT = path.join(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
 const OUT = path.join(DIST, "freeze.zip");
+const UNPACKED = path.join(DIST, "freeze-unpacked");
 
-const INCLUDE = ["manifest.json", "src", "icons"];
+const INCLUDE = ["manifest.json", "src", "popup", "icons"];
 
 function walk(rel, acc) {
   const abs = path.join(ROOT, rel);
@@ -96,8 +97,15 @@ const files = [];
 for (const entry of INCLUDE) walk(entry, files);
 fs.mkdirSync(DIST, { recursive: true });
 fs.writeFileSync(OUT, buildZip(files));
+fs.rmSync(UNPACKED, { recursive: true, force: true });
+for (const file of files) {
+  const destination = path.join(UNPACKED, file);
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.copyFileSync(path.join(ROOT, file), destination);
+}
 const SITE_ZIP = path.join(ROOT, "site", "freeze.zip");
 fs.mkdirSync(path.dirname(SITE_ZIP), { recursive: true });
 fs.copyFileSync(OUT, SITE_ZIP);
 console.log(`packed ${files.length} files -> ${path.relative(ROOT, OUT)}`);
+console.log(`copied unpacked extension -> ${path.relative(ROOT, UNPACKED)}`);
 console.log(`copied -> ${path.relative(ROOT, SITE_ZIP)}`);

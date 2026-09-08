@@ -1,8 +1,8 @@
 {
   "name": "freeze-extension",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
-  "description": "One-click pause/resume of media across every open Brave tab.",
+  "description": "One-click freeze/thaw, rewind, and unified volume across every open Brave tab.",
   "scripts": {
     "icons": "node scripts/generate-icons.js",
     "pack": "node scripts/pack.js",

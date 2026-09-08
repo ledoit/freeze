@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Freeze</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <span class="mark" aria-hidden="true">❄</span>
+      <div>
+        <h1>Freeze</h1>
+        <p id="status">Checking tabs…</p>
+      </div>
+    </header>
+
+    <main>
+      <button id="toggle" class="primary" type="button">
+        <span class="button-icon" aria-hidden="true">Ⅱ</span>
+        <span>
+          <strong id="toggle-label">Freeze all</strong>
+          <small id="toggle-detail">Pause media in every tab</small>
+        </span>
+      </button>
+
+      <button id="rewind" class="secondary" type="button">
+        <span class="button-icon" aria-hidden="true">↤</span>
+        <span>
+          <strong id="rewind-label">Back to 0:00</strong>
+          <small>Rewind all reachable media</small>
+        </span>
+      </button>
+
+      <label class="volume" for="volume">
+        <span class="volume-copy">
+          <strong>All-tabs volume</strong>
+          <small id="volume-value">100%</small>
+        </span>
+        <input id="volume" type="range" min="0" max="100" value="100" />
+      </label>
+    </main>
+
+    <footer>
+      <span>Local only</span>
+      <span>Alt+Shift+F · Alt+Shift+0</span>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

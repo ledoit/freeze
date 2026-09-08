@@ -135,12 +135,10 @@
     label.textContent = "Freeze";
 
     players.forEach(p => {
-      if (p.dataset.fp === "1") {
-        p.dataset.fp = "0";
-        p.classList.remove("fp");
-        p.classList.add("playing");
-        p.querySelector(".p-state").textContent = "live";
-      }
+      p.dataset.fp = "0";
+      p.classList.remove("fp", "idle");
+      p.classList.add("playing");
+      p.querySelector(".p-state").textContent = "live";
     });
     tabs.forEach(t => syncTab(t.dataset.tab));
     refreshStatus();
