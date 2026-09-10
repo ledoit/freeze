@@ -17,7 +17,7 @@
 
 | Issue | What |
 |-------|------|
-| [MT-210](https://linear.app/menhir-holdings/issue/MT-210) | Install landing restyle — frost glass / folk split / one primary CTA |
+| [MT-210](https://linear.app/menhir-holdings/issue/MT-210) | Install landing restyle — [PR #8](https://github.com/menhir-holdings/freeze/pull/8) · [preview](https://freeze-85q42ef6a-menhir-holdings.vercel.app) |
 | [MT-183](https://linear.app/menhir-holdings/issue/MT-183) | Thaw all plays every tab — [PR #7](https://github.com/menhir-holdings/freeze/pull/7) |
 | [MT-182](https://linear.app/menhir-holdings/issue/MT-182) | Unified volume slider — [PR #7](https://github.com/menhir-holdings/freeze/pull/7) |
 | [MT-178](https://linear.app/menhir-holdings/issue/MT-178) | Reliability + rewind-all — [PR #6](https://github.com/menhir-holdings/freeze/pull/6) |

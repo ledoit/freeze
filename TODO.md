@@ -4,7 +4,7 @@ Linear is authoritative: [Freeze project](https://linear.app/menhir-holdings/pro
 
 ## 1. Install landing restyle — [MT-210](https://linear.app/menhir-holdings/issue/MT-210) (In Review)
 
-Frost-on-glass install page: folk split (copy left, live demo right), single Download CTA, 3-step load-unpacked. Preview on the PR.
+Frost-on-glass install page: folk split (copy left, live demo right), single Download CTA, 3-step load-unpacked. [PR #8](https://github.com/menhir-holdings/freeze/pull/8) · [preview](https://freeze-85q42ef6a-menhir-holdings.vercel.app).
 
 **Verify:** `#freeze-demo` still freezes/thaws; `freeze.zip` downloads; Open Extensions copies `chrome://extensions` (or Brave/Edge equivalent).
 
