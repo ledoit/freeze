@@ -102,24 +102,21 @@ function distToSegment(px, py, ax, ay, bx, by) {
 
 function snowflakeSegments(size) {
   const c = size / 2;
-  const arm = size * 0.34;
+  const arm = size * 0.36;
   const segs = [];
   for (let k = 0; k < 6; k++) {
-    const ang = (k * Math.PI) / 3;
+    // Start at 12 o'clock so every arm, including diagonals, is identical.
+    const ang = (k * Math.PI) / 3 - Math.PI / 2;
     const dx = Math.cos(ang);
     const dy = Math.sin(ang);
-    const tipX = c + arm * dx;
-    const tipY = c + arm * dy;
-    segs.push([c, c, tipX, tipY]);
-    // two pairs of branches along each arm
-    for (const at of [0.5, 0.78]) {
-      const bx = c + arm * at * dx;
-      const by = c + arm * at * dy;
-      const blen = arm * 0.28;
-      for (const off of [Math.PI / 3, -Math.PI / 3]) {
-        const a2 = ang + off;
-        segs.push([bx, by, bx + blen * Math.cos(a2), by + blen * Math.sin(a2)]);
-      }
+    segs.push([c, c, c + arm * dx, c + arm * dy]);
+    const at = 0.62;
+    const bx = c + arm * at * dx;
+    const by = c + arm * at * dy;
+    const blen = arm * 0.32;
+    for (const off of [Math.PI / 3, -Math.PI / 3]) {
+      const a2 = ang + off;
+      segs.push([bx, by, bx + blen * Math.cos(a2), by + blen * Math.sin(a2)]);
     }
   }
   return segs;
