@@ -11,7 +11,7 @@ The icon turns **ice-blue with a ❄ badge** while frozen so you always know the
 
 ## Landing lockstep
 
-The install site is not a brochure of future work. **Site = extension source of truth for user-facing capabilities.** Any change to pause / thaw / rewind / volume / toolbar behavior must update `site/index.html` (and `site/freeze.zip` via `npm run build`) in the **same PR**. See [AGENTS.md](./AGENTS.md).
+The install site is not a brochure of future work. **Site = extension source of truth for user-facing capabilities.** Any change to pause / thaw / rewind / volume / toolbar behavior must update the landing (hero / sub, toolbar sim, and `site/freeze.zip` via `npm run build`) in the **same PR**. See [AGENTS.md](./AGENTS.md).
 
 ## Install
 
