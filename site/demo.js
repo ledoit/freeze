@@ -66,7 +66,7 @@
         <p class="b-status" aria-live="polite"></p>
       </div>
     </div>
-    <p class="demo-tip">Click <strong>Freeze</strong> in the toolbar above — or tap a stream to pause it first.</p>
+    <p class="demo-tip">Click <strong>Freeze</strong> in the toolbar — or pause a stream first. Thaw resumes only what Freeze stopped.</p>
   `;
 
   const btn     = root.querySelector(".b-freeze");

@@ -132,11 +132,34 @@ body {
 }
 .hero-text .sub {
   margin-top: 18px;
-  max-width: 34ch;
+  max-width: 36ch;
   font-size: 16px;
   font-weight: 400;
   color: var(--muted);
   line-height: 1.55;
+}
+
+.caps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 36ch;
+}
+.caps li {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.caps strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--frost);
+  margin-bottom: 2px;
 }
 
 .trust {

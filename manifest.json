@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Freeze",
   "version": "1.0.0",
-  "description": "One click freezes (pauses) media — especially YouTube — across every open tab. Click again to thaw and resume.",
+  "description": "One click pauses playing video and audio — especially YouTube — across every open tab. Click again to thaw only what Freeze paused.",
   "permissions": ["tabs", "scripting", "storage"],
   "host_permissions": ["<all_urls>"],
   "background": {

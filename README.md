@@ -1,13 +1,17 @@
 # Freeze
 
-**One click freezes (pauses) media — especially YouTube — across every open tab. Click again to thaw and resume.**
+**One click freezes (pauses) playing HTML5 video and audio — especially YouTube — across every open tab. Click again to thaw only what Freeze paused.**
 
-Freeze is a tiny, zero-dependency Manifest V3 extension for Brave (and Chrome/Edge/any Chromium browser). The toolbar button is the whole UI:
+Freeze is a tiny, zero-dependency Manifest V3 extension for Brave (and Chrome/Edge/any Chromium browser). The toolbar button is the whole UI (no popup):
 
-- **Click once** → every currently-playing `<video>` / `<audio>` in every open tab pauses (YouTube, Twitch, Spotify web, SoundCloud, embeds, …).
+- **Click once** → currently-playing `<video>` / `<audio>` in every open tab pauses (YouTube, Twitch, SoundCloud, embeds, and other pages that use HTML5 media).
 - **Click again** → only the media *Freeze* paused resumes. Anything you had already paused stays paused.
 
 The icon turns **ice-blue with a ❄ badge** while frozen so you always know the state.
+
+## Landing lockstep
+
+The install site is not a brochure of future work. **Site = extension source of truth for user-facing capabilities.** Any change to pause / thaw / rewind / volume / toolbar behavior must update `site/index.html` (and `site/freeze.zip` via `npm run build`) in the **same PR**. See [AGENTS.md](./AGENTS.md).
 
 ## Install
 
