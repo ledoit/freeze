@@ -10,7 +10,7 @@ const ROOT = path.join(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
 const OUT = path.join(DIST, "freeze.zip");
 
-const INCLUDE = ["manifest.json", "src", "icons"];
+const INCLUDE = ["manifest.json", "src", "popup", "icons"];
 
 function walk(rel, acc) {
   const abs = path.join(ROOT, rel);
