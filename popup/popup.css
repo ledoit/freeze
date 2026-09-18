@@ -1,0 +1,151 @@
+:root {
+  color-scheme: dark;
+  --bg: #090d14;
+  --panel: #111824;
+  --line: #263244;
+  --text: #ecf4ff;
+  --muted: #8b9ab0;
+  --ice: #54b7ff;
+  --ice-deep: #167bd4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 300px;
+  margin: 0;
+  padding: 18px;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.35 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 16px;
+}
+
+.mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--ice);
+  font-size: 19px;
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+#status {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+main {
+  display: grid;
+  gap: 9px;
+}
+
+button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+button:not(:disabled):hover {
+  border-color: var(--ice);
+}
+
+.primary {
+  background: var(--ice-deep);
+  border-color: #278ee7;
+}
+
+.primary.frozen {
+  background: #174c72;
+}
+
+.secondary {
+  background: var(--panel);
+}
+
+.button-icon {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  place-items: center;
+  font: 700 18px/1 ui-monospace, monospace;
+}
+
+button span:last-child {
+  display: grid;
+  gap: 2px;
+}
+
+strong {
+  font-size: 13px;
+}
+
+small {
+  color: #c1cede;
+  font-size: 10px;
+}
+
+.volume {
+  display: grid;
+  gap: 8px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+}
+
+.volume-copy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.volume input[type="range"] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--ice);
+  cursor: pointer;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  color: var(--muted);
+  font: 9px/1.2 ui-monospace, "Cascadia Code", monospace;
+}

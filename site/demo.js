@@ -1,9 +1,9 @@
 (() => {
   const FROZEN_COLOR = "#2E8BFF";
   const IDLE_ICON = "#6b7280";
-  const TITLE_IDLE = "Freeze — click to pause all media in every tab.";
+  const TITLE_IDLE = "Freeze — pause, rewind, or set volume across every tab.";
   const TITLE_FROZEN = (n) =>
-    `Freeze — ${n} item(s) paused. Click to resume.`;
+    `Freeze — ${n} item(s) paused. Open to thaw only those.`;
 
   const FLAKE = `
     <svg class="ext-flake" viewBox="0 0 24 24" aria-hidden="true">
@@ -104,7 +104,7 @@
           <span class="puzzle" aria-hidden="true" title="Extensions">
             <svg viewBox="0 0 16 16"><path fill="currentColor" d="M6.2 2.2v1.5H4.4A1.2 1.2 0 0 0 3.2 4.9v1.8H1.8v2.6h1.4v1.8A1.2 1.2 0 0 0 4.4 12.3h1.8v1.5h2.6v-1.5h1.8a1.2 1.2 0 0 0 1.2-1.2V9.3h1.4V6.7h-1.4V4.9a1.2 1.2 0 0 0-1.2-1.2H8.8V2.2H6.2z"/></svg>
           </span>
-          <button class="ext" type="button" aria-pressed="false" aria-label="${TITLE_IDLE}">
+          <button class="ext is-open" type="button" aria-pressed="false" aria-expanded="true" aria-label="${TITLE_IDLE}">
             <span class="ext-mark">${FLAKE}</span>
             <span class="ext-badge">❄</span>
           </button>
@@ -140,6 +140,42 @@
             </div>
           </article>`).join("")}
       </div>
+      <aside class="ext-popup" aria-label="Freeze popup">
+        <header>
+          <span class="popup-mark" aria-hidden="true">❄</span>
+          <div>
+            <h3>Freeze</h3>
+            <p class="popup-status">All tabs are live</p>
+          </div>
+        </header>
+        <div class="popup-main">
+          <button class="popup-toggle primary" type="button">
+            <span class="button-icon" aria-hidden="true">Ⅱ</span>
+            <span>
+              <strong class="toggle-label">Freeze all</strong>
+              <small class="toggle-detail">Pause media in every tab</small>
+            </span>
+          </button>
+          <button class="popup-rewind secondary" type="button">
+            <span class="button-icon" aria-hidden="true">↤</span>
+            <span>
+              <strong class="rewind-label">Back to 0:00</strong>
+              <small>Rewind all reachable media</small>
+            </span>
+          </button>
+          <label class="popup-volume">
+            <span class="volume-copy">
+              <strong>All-tabs volume</strong>
+              <small class="volume-value">100%</small>
+            </span>
+            <input class="volume-slider" type="range" min="0" max="100" value="100" />
+          </label>
+        </div>
+        <footer>
+          <span>Local only</span>
+          <span>Alt+Shift+F · Alt+Shift+0</span>
+        </footer>
+      </aside>
     </div>
   `;
 
@@ -150,9 +186,21 @@
   const tabBtns = [...root.querySelectorAll(".tab")];
   const panes = [...root.querySelectorAll(".watch")];
   const videos = [...root.querySelectorAll("video")];
+  const popup = root.querySelector(".ext-popup");
+  const toggleBtn = popup.querySelector(".popup-toggle");
+  const toggleIcon = toggleBtn.querySelector(".button-icon");
+  const toggleLabel = popup.querySelector(".toggle-label");
+  const toggleDetail = popup.querySelector(".toggle-detail");
+  const statusEl = popup.querySelector(".popup-status");
+  const rewindBtn = popup.querySelector(".popup-rewind");
+  const rewindLabel = popup.querySelector(".rewind-label");
+  const volumeSlider = popup.querySelector(".volume-slider");
+  const volumeValue = popup.querySelector(".volume-value");
 
   let frozen = false;
   let busy = false;
+  let volumeLevel = 1;
+  let volumeUnlocked = false;
   let active = TABS[0].id;
 
   mark.style.background = IDLE_ICON;
@@ -166,10 +214,8 @@
     return `${m}:${r.toString().padStart(2, "0")}`;
   }
 
-  function shouldFreeze(el) {
-    if (el.paused || el.ended) return false;
-    if (el.currentTime > 0) return true;
-    return !!el.srcObject;
+  function taggedCount() {
+    return videos.filter((el) => el.dataset.freezePaused === "1").length;
   }
 
   function paneFor(id) {
@@ -178,6 +224,14 @@
 
   function videoFor(id) {
     return videos.find((v) => v.dataset.id === id);
+  }
+
+  function applyVolume(el, level) {
+    try {
+      el.volume = level;
+      // Keep muted until the user moves the slider so autoplay is allowed.
+      el.muted = volumeUnlocked ? level === 0 : true;
+    } catch (_) { /* ignore */ }
   }
 
   function syncTab(id) {
@@ -220,6 +274,14 @@
     if (meta) omni.textContent = `youtube.com/${meta.path}`;
   }
 
+  function renderVolume(level = volumeLevel) {
+    volumeLevel = Math.min(1, Math.max(0, Number(level) || 0));
+    const pct = Math.round(volumeLevel * 100);
+    volumeSlider.value = String(pct);
+    volumeValue.textContent = `${pct}%`;
+    videos.forEach((el) => applyVolume(el, volumeLevel));
+  }
+
   function reflect(count) {
     root.classList.toggle("is-frozen", frozen);
     ext.classList.toggle("is-frozen", frozen);
@@ -227,13 +289,23 @@
     ext.setAttribute("aria-label", frozen ? TITLE_FROZEN(count) : TITLE_IDLE);
     mark.style.background = frozen ? FROZEN_COLOR : IDLE_ICON;
     badge.hidden = !frozen;
+    toggleBtn.classList.toggle("frozen", frozen);
+    toggleBtn.disabled = false;
+    toggleIcon.textContent = frozen ? "▶" : "Ⅱ";
+    toggleLabel.textContent = frozen ? "Thaw all" : "Freeze all";
+    toggleDetail.textContent = frozen
+      ? "Resume only what Freeze paused"
+      : "Pause media in every tab";
+    statusEl.textContent = frozen
+      ? `${count} media item${count === 1 ? "" : "s"} held`
+      : "All tabs are live";
   }
 
   function freeze() {
     let count = 0;
     videos.forEach((el) => {
       try {
-        if (shouldFreeze(el)) {
+        if (!el.paused && !el.ended) {
           el.dataset.freezePaused = "1";
           el.pause();
           count++;
@@ -246,6 +318,7 @@
   }
 
   function thaw() {
+    frozen = false;
     let count = 0;
     videos.forEach((el) => {
       try {
@@ -257,19 +330,47 @@
         }
       } catch (_) { /* ignore */ }
     });
-    frozen = false;
     reflect(count);
     TABS.forEach((t) => paintPane(t.id));
   }
 
-  ext.addEventListener("click", () => {
+  function rewindAll() {
+    let count = 0;
+    videos.forEach((el) => {
+      try {
+        el.currentTime = 0;
+        count++;
+      } catch (_) { /* ignore */ }
+    });
+    TABS.forEach((t) => paintPane(t.id));
+    return count;
+  }
+
+  toggleBtn.addEventListener("click", () => {
     if (busy) return;
     busy = true;
+    toggleBtn.disabled = true;
+    statusEl.textContent = "Working across tabs…";
     try {
       frozen ? thaw() : freeze();
     } finally {
       busy = false;
     }
+  });
+
+  rewindBtn.addEventListener("click", () => {
+    rewindBtn.disabled = true;
+    const n = rewindAll();
+    rewindLabel.textContent = `${n} reset to 0:00`;
+    window.setTimeout(() => {
+      rewindLabel.textContent = "Back to 0:00";
+      rewindBtn.disabled = false;
+    }, 1600);
+  });
+
+  volumeSlider.addEventListener("input", () => {
+    volumeUnlocked = true;
+    renderVolume(Number(volumeSlider.value) / 100);
   });
 
   tabBtns.forEach((b) => {
@@ -305,6 +406,7 @@
     const tab = TABS.find((t) => t.id === vid.dataset.id);
     vid.poster = "";
     vid.style.background = `linear-gradient(135deg, ${tab.tape[0]}, ${tab.tape[1]})`;
+    applyVolume(vid, volumeLevel);
 
     const fail = () => attachTape(vid, tab);
 
@@ -321,7 +423,17 @@
       }
     }, { once: true });
 
-    ["play", "pause", "timeupdate", "ended", "seeked"].forEach((ev) => {
+    vid.addEventListener("play", () => {
+      applyVolume(vid, volumeLevel);
+      if (frozen && !vid.ended) {
+        vid.dataset.freezePaused = "1";
+        vid.pause();
+        reflect(taggedCount());
+      }
+      paintPane(tab.id);
+    });
+
+    ["pause", "timeupdate", "ended", "seeked"].forEach((ev) => {
       vid.addEventListener(ev, () => paintPane(tab.id));
     });
   });
@@ -360,4 +472,6 @@
 
   TABS.forEach((t) => paintPane(t.id));
   showTab(active);
+  reflect(taggedCount());
+  renderVolume(1);
 })();

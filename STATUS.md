@@ -1,6 +1,6 @@
 # Freeze — Status
 
-**As of:** 2026-09-17  
+**As of:** 2026-09-18  
 **SoT:** [Linear — Freeze](https://linear.app/menhir-holdings/project/freeze-brave-extension-5672687b-a2c6-42f9-a532-84197440a683)
 
 ## Shipped
@@ -19,9 +19,9 @@
 
 | Issue | What |
 |-------|------|
-| [MT-232](https://linear.app/menhir-holdings/issue/MT-232) | Landing always mirrors extension capabilities |
-| [MT-183](https://linear.app/menhir-holdings/issue/MT-183) | Thaw all plays every tab — [PR #7](https://github.com/menhir-holdings/freeze/pull/7) |
-| [MT-182](https://linear.app/menhir-holdings/issue/MT-182) | Unified volume slider — [PR #7](https://github.com/menhir-holdings/freeze/pull/7) |
-| [MT-178](https://linear.app/menhir-holdings/issue/MT-178) | Reliability + rewind-all — [PR #6](https://github.com/menhir-holdings/freeze/pull/6) |
+| [MT-232](https://linear.app/menhir-holdings/issue/MT-232) | Landing lockstep — this PR’s zip **ships the popup** (tagged freeze/thaw, all-tabs volume, rewind to 0:00) and the right-hand sim is that panel. [PR #10](https://github.com/menhir-holdings/freeze/pull/10) |
+| [MT-183](https://linear.app/menhir-holdings/issue/MT-183) | Thaw all plays every tab — still [PR #7](https://github.com/menhir-holdings/freeze/pull/7). Overlaps MT-232 popup chrome; **not** adopted here (tagged thaw stays). |
+| [MT-182](https://linear.app/menhir-holdings/issue/MT-182) | Unified volume slider — engine + landing now on MT-232 preview; [PR #7](https://github.com/menhir-holdings/freeze/pull/7) still open. |
+| [MT-178](https://linear.app/menhir-holdings/issue/MT-178) | Reliability + rewind-all — rewind + freeze controller now on MT-232 preview; [PR #6](https://github.com/menhir-holdings/freeze/pull/6) still open. |
 
 See [TODO.md](./TODO.md).

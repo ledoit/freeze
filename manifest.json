@@ -1,20 +1,35 @@
 {
   "manifest_version": 3,
   "name": "Freeze",
-  "version": "1.0.0",
-  "description": "One click pauses playing video and audio — especially YouTube — across every open tab. Click again to thaw only what Freeze paused.",
+  "version": "1.2.0",
+  "description": "Freeze, thaw, rewind, or set volume across every open tab. Thaw resumes only what Freeze paused.",
   "permissions": ["tabs", "scripting", "storage"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "src/background.js"
   },
   "action": {
-    "default_title": "Freeze — click to pause all media in every tab",
+    "default_title": "Freeze — pause, rewind, or set volume across every tab",
+    "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/freeze-16.png",
       "32": "icons/freeze-32.png",
       "48": "icons/freeze-48.png",
       "128": "icons/freeze-128.png"
+    }
+  },
+  "commands": {
+    "toggle-freeze": {
+      "suggested_key": {
+        "default": "Alt+Shift+F"
+      },
+      "description": "Freeze or thaw tagged media"
+    },
+    "rewind-all": {
+      "suggested_key": {
+        "default": "Alt+Shift+0"
+      },
+      "description": "Rewind all media to 0:00"
     }
   },
   "icons": {
