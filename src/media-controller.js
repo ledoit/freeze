@@ -9,8 +9,8 @@ function controlMediaInPage(payload) {
       : null;
 
   const MARK = "freezePaused";
-  const CONTROLLER = "__menhirFreezeController";
-  const VOLUME = "__menhirFreezeVolume";
+  const CONTROLLER = "__freezeController";
+  const VOLUME = "__freezeVolume";
   let touched = 0;
 
   const allMedia = () => document.querySelectorAll("video, audio");

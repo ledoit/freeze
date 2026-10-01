@@ -17,7 +17,7 @@ The install site is not a brochure of future work. **Site = extension source of 
 
 ## Install
 
-**From the landing page (recommended):** open the [Freeze site](https://freeze.menhir-holdings.com), download `freeze.zip`, unzip it, then load the folder in your browser's extensions page.
+**From the landing page (recommended):** open the [Freeze site](https://freeze.koalasalmon.com), download `freeze.zip`, unzip it, then load the folder in your browser's extensions page.
 
 **From this repo:**
 
@@ -66,7 +66,7 @@ site/                install/landing page + freeze.zip (deployed to Vercel)
 
 ## License
 
-All Rights Reserved © Menhir Holdings
+All Rights Reserved © Philippe Ledoit
 
 ## Project tracking
 
